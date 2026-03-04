@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Indicators | EagleEye Pro Trading</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --secondary: #ff4d4d;
+            --bg-dark: #0B0E11;
+            --bg-card: rgba(30, 34, 45, 0.7);
+            --text-main: #ffffff;
+            --text-dim: #b2b5be;
+            --accent-blue: #2962ff;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .section-title span {
+            color: var(--primary);
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: #000;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        nav {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            background: rgba(11, 14, 17, 0.9);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid #222;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="index.html" class="logo">EagleEye <span>Pro</span></a>
+            <a href="index.html" class="btn" style="padding: 8px 20px; font-size: 0.8rem;">Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Detailed Overviews -->
+    <section id="deep-dive">
+        <div class="container">
+            <h2 class="section-title">Indicator <span>Deep Dives</span></h2>
+
+            <!-- Scalping Indicator Deep Dive -->
+            <div class="glass-card" style="margin-bottom: 50px; border-left: 5px solid var(--primary);">
+                <div class="grid" style="align-items: center;">
+                    <div>
+                        <h3 style="font-size: 2rem; margin-bottom: 20px;">1. Intraday Scalping Indicator</h3>
+                        <p style="color: var(--text-dim); margin-bottom: 20px;">A high-frequency trading powerhouse
+                            designed for the 1-minute and 5-minute charts. This indicator filters out market noise and
+                            focuses on pure momentum reversals.</p>
+                        <h4 style="margin-bottom: 10px;">Technical Edge:</h4>
+                        <ul style="color: var(--text-dim); margin-bottom: 30px; padding-left: 20px;">
+                            <li>SuperTrend volatility tracking for trend baseline.</li>
+                            <li>MACD Histogram expansion detection for fresh momentum.</li>
+                            <li>RSI (14) overbought/oversold filtering for higher accuracy.</li>
+                            <li>Automatic Support/Resistance pivot levels.</li>
+                            <li>Non-repainting signals for reliable backtesting.</li>
+                        </ul>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn">Buy Now -
+                                ₹175</button>
+                            <a href="index.html#demo" class="btn"
+                                style="background: transparent; border: 1px solid var(--primary); color: var(--primary);">Watch
+                                Demo</a>
+                            <a href="index.html#setup" class="btn"
+                                style="background: transparent; border: 1px solid #555; color: #fff;">Setup Guide</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategy Indicator Deep Dive -->
+            <div class="glass-card" style="border-left: 5px solid var(--accent-blue);">
+                <div class="grid" style="align-items: center;">
+                    <div>
+                        <h3 style="font-size: 2rem; margin-bottom: 20px;">2. PRO Intraday Strategy [Clean]</h3>
+                        <p style="color: var(--text-dim); margin-bottom: 20px;">A complete trading system that manages
+                            your risk as well as your entries. Perfect for traders who want a visual blueprint of their
+                            targets and stop losses.</p>
+                        <h4 style="margin-bottom: 10px;">Strategic Edge:</h4>
+                        <ul style="color: var(--text-dim); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Visual Stop Loss & Take Profit lines (ATR Based).</li>
+                            <li>1:2 Risk-to-Reward ratio optimization.</li>
+                            <li>Clean UI with background fills during active trades.</li>
+                            <li>Intelligent exit logic for trend exhaustion.</li>
+                            <li>Built-in risk management and position sizing insights.</li>
+                        </ul>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
+                                style="background: var(--accent-blue); color: #fff;">Buy Now - ₹149</button>
+                            <a href="index.html#demo" class="btn"
+                                style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);">Watch
+                                Demo</a>
+                            <a href="index.html#setup" class="btn"
+                                style="background: transparent; border: 1px solid #555; color: #fff;">Setup Guide</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 EagleEye Pro Trading. All rights reserved.</p>
+    </footer>
+
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        function payNow(amount, indicatorTitle, lockedId) {
+            var options = {
+                "key": "rzp_test_SBevU6jiy0Vrz0",
+                "amount": amount * 100,
+                "currency": "INR",
+                "name": "EagleEye Pro Trading",
+                "description": "Purchase " + indicatorTitle,
+                "handler": function (response) {
+                    alert("Payment Successful! Redirecting to unlock your code...");
+                    // Store success in localStorage and redirect back to home
+                    localStorage.setItem('payment_' + lockedId, 'success');
+                    window.location.href = 'index.html#' + lockedId;
+                },
+                "prefill": { "name": "", "email": "", "contact": "" },
+                "theme": { "color": "#00ff88" }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+</body>
+
+</html>

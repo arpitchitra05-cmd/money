@@ -275,6 +275,52 @@
             }
         }
 
+        /* Navigation */
+        nav {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(11, 14, 17, 0.8);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
         /* Animations */
         @keyframes fadeInDown {
             from {
@@ -304,6 +350,20 @@
 
 <body>
 
+    <nav>
+        <div class="container nav-content">
+            <a href="#home" class="logo">EagleEye <span>Pro</span></a>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="about.html">Details</a>
+                <a href="#demo">Demo</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <a href="about.html" class="btn" style="padding: 10px 25px; font-size: 0.8rem;">About Pages</a>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
@@ -311,7 +371,7 @@
                 <h1>EagleEye Pro Indicator</h1>
                 <p>Advanced algorithmic trading signals for TradingView. High accuracy, zero lag, and professional-grade
                     technical analysis.</p>
-                <a href="#pricing" class="btn">Buy Indicator – ₹175</a>
+                <a href="about.html" class="btn">View About Details – ₹175</a>
             </div>
         </div>
     </section>
@@ -398,6 +458,37 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
+        window.onload = function () {
+            // Check for payments made on the About page
+            ['locked-1', 'locked-2'].forEach(id => {
+                if (localStorage.getItem('payment_' + id) === 'success') {
+                    unlockCode(id);
+                    localStorage.removeItem('payment_' + id); // Clear to avoid repeated alerts
+                }
+            });
+        };
+
+        function unlockCode(lockedId) {
+            const lockedSection = document.getElementById(lockedId);
+            if (!lockedSection) return;
+
+            const lockOverlay = lockedSection.querySelector('.lock-overlay');
+            const lockedContent = lockedSection.querySelector('.locked-content');
+            const copyBtn = lockedSection.querySelector('.copy-btn');
+
+            lockOverlay.style.display = 'none';
+            lockedContent.style.filter = 'none';
+            lockedContent.style.opacity = '1';
+            lockedContent.style.userSelect = 'text';
+            lockedContent.style.maxHeight = '500px';
+            lockedContent.style.overflowY = 'auto';
+
+            if (copyBtn) copyBtn.style.display = 'block';
+
+            // Scroll to the code
+            lockedSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
         function payNow(amount, indicatorTitle, lockedId) {
             var options = {
                 "key": "rzp_test_SBevU6jiy0Vrz0", // Your Test Key
@@ -408,23 +499,7 @@
                 "handler": function (response) {
                     // Success! Unlock the code
                     alert("Payment Successful! Your code is now unlocked.");
-
-                    const lockedSection = document.getElementById(lockedId);
-                    const lockOverlay = lockedSection.querySelector('.lock-overlay');
-                    const lockedContent = lockedSection.querySelector('.locked-content');
-                    const copyBtn = lockedSection.querySelector('.copy-btn');
-
-                    lockOverlay.style.display = 'none';
-                    lockedContent.style.filter = 'none';
-                    lockedContent.style.opacity = '1';
-                    lockedContent.style.userSelect = 'text';
-                    lockedContent.style.maxHeight = '500px';
-                    lockedContent.style.overflowY = 'auto';
-
-                    if (copyBtn) copyBtn.style.display = 'block';
-
-                    // Scroll to the code
-                    lockedSection.scrollIntoView({ behavior: 'smooth' });
+                    unlockCode(lockedId);
                 },
                 "prefill": { "name": "", "email": "", "contact": "" },
                 "theme": { "color": "#00ff88" }
@@ -464,8 +539,8 @@
                         <li>✔️ Non-Repainting Signals</li>
                         <li>✔️ Lifetime Access</li>
                     </ul>
-                    <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
-                        style="width: 100%; border: none; cursor: pointer;">Buy Scalping Code</button>
+                    <button onclick="window.location.href='about.html'" class="btn"
+                        style="width: 100%; border: none; cursor: pointer;">View Details & Buy</button>
                 </div>
 
                 <!-- Card 2: Strategy Indicator -->
@@ -478,9 +553,9 @@
                         <li>✔️ SL/TP Target Visuals</li>
                         <li>✔️ Lifetime Access</li>
                     </ul>
-                    <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
-                        style="width: 100%; background: var(--accent-blue); box-shadow: 0 0 20px rgba(41, 98, 255, 0.3); border: none; cursor: pointer;">Buy
-                        Strategy Code</button>
+                    <button onclick="window.location.href='about.html'" class="btn"
+                        style="width: 100%; background: var(--accent-blue); box-shadow: 0 0 20px rgba(41, 98, 255, 0.3); border: none; cursor: pointer;">View
+                        Details & Buy</button>
                 </div>
             </div>
         </div>
@@ -775,68 +850,7 @@ alertcondition(goShort, "Sell Alert", "Short Entry Signal")
         </div>
     </section>
 
-    <!-- Detailed Overviews -->
-    <section id="deep-dive">
-        <div class="container">
-            <h2 class="section-title">Indicator <span>Deep Dives</span></h2>
-
-            <!-- Scalping Indicator Deep Dive -->
-            <div class="glass-card" style="margin-bottom: 50px; border-left: 5px solid var(--primary);">
-                <div class="grid" style="align-items: center;">
-                    <div>
-                        <h3 style="font-size: 2rem; margin-bottom: 20px;">1. Intraday Scalping Indicator</h3>
-                        <p style="color: var(--text-dim); margin-bottom: 20px;">A high-frequency trading powerhouse
-                            designed for the 1-minute and 5-minute charts. This indicator filters out market noise and
-                            focuses on pure momentum reversals.</p>
-                        <h4 style="margin-bottom: 10px;">Technical Edge:</h4>
-                        <ul style="color: var(--text-dim); margin-bottom: 30px; padding-left: 20px;">
-                            <li>SuperTrend volatility tracking for trend baseline.</li>
-                            <li>MACD Histogram expansion detection for fresh momentum.</li>
-                            <li>RSI (14) overbought/oversold filtering for higher accuracy.</li>
-                            <li>Automatic Support/Resistance pivot levels.</li>
-                        </ul>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
-                                style="border: none; cursor: pointer;">Buy - ₹175</button>
-                            <a href="#demo" class="btn"
-                                style="background: transparent; border: 1px solid var(--primary); color: var(--primary);">Watch
-                                Demo</a>
-                            <a href="#setup" class="btn"
-                                style="background: transparent; border: 1px solid #555; color: #fff;">How to Setup</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Strategy Indicator Deep Dive -->
-            <div class="glass-card" style="border-left: 5px solid var(--accent-blue);">
-                <div class="grid" style="align-items: center;">
-                    <div>
-                        <h3 style="font-size: 2rem; margin-bottom: 20px;">2. PRO Intraday Strategy [Clean]</h3>
-                        <p style="color: var(--text-dim); margin-bottom: 20px;">A complete trading system that manages
-                            your risk as well as your entries. Perfect for traders who want a visual blueprint of their
-                            targets and stop losses.</p>
-                        <h4 style="margin-bottom: 10px;">Strategic Edge:</h4>
-                        <ul style="color: var(--text-dim); margin-bottom: 30px; padding-left: 20px;">
-                            <li>Visual Stop Loss & Take Profit lines (ATR Based).</li>
-                            <li>1:2 Risk-to-Reward ratio optimization.</li>
-                            <li>Clean UI with background fills during active trades.</li>
-                            <li>Intelligent exit logic for trend exhaustion.</li>
-                        </ul>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
-                                style="background: var(--accent-blue); border: none; cursor: pointer; color: #fff;">Buy
-                                - ₹149</button>
-                            <a href="#demo" class="btn"
-                                style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);">Watch
-                                Demo</a>
-                            <a href="#setup" class="btn"
-                                style="background: transparent; border: 1px solid #555; color: #fff;">How to Setup</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
     </section>
 
     <!-- Contact Section -->
