@@ -88,16 +88,32 @@
             }
         }
 
+
         .grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
         }
 
-        @media (min-width: 1024px) {
+        @media (min-width: 768px) {
             .grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 40px;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+            }
+        }
+
+        /* Deep dive cards: always 2-column on desktop */
+        .deep-dive-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        @media (min-width: 900px) {
+            .deep-dive-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 50px;
             }
         }
 
@@ -273,7 +289,7 @@
 
             <!-- Scalping Indicator Deep Dive -->
             <div class="glass-card" style="margin-bottom: 50px; border-left: 5px solid var(--primary);">
-                <div class="grid" style="align-items: center;">
+                <div class="deep-dive-grid">
                     <div>
                         <h3 style="font-size: 2.2rem; margin-bottom: 20px;">1. Intraday Scalping Indicator</h3>
                         <p style="color: var(--text-dim); margin-bottom: 25px; line-height: 1.8;">A high-frequency
@@ -322,7 +338,7 @@
 
             <!-- Strategy Indicator Deep Dive -->
             <div class="glass-card" style="border-left: 5px solid var(--accent-blue);">
-                <div class="grid" style="align-items: center;">
+                <div class="deep-dive-grid">
                     <div style="order: 2;">
                         <h3 style="font-size: 2.2rem; margin-bottom: 20px;">2. PRO Intraday Strategy [Clean]</h3>
                         <p style="color: var(--text-dim); margin-bottom: 25px; line-height: 1.8;">The definitive

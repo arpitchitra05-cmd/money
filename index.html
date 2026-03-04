@@ -177,7 +177,7 @@
             box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
         }
 
-        /* Grid Layouts - Mobile First (1 column) */
+        /* Grid Layouts - Mobile First */
         .grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -186,18 +186,30 @@
 
         @media (min-width: 768px) {
             .grid {
-                grid-template-columns: repeat(2, 1fr);
+                /* Auto creates 2 or 3 columns naturally based on content */
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                 gap: 30px;
             }
         }
 
-        @media (min-width: 1024px) {
-            .grid {
-                grid-template-columns: repeat(3, 1fr);
+        /* Sections that must always be exactly 2 columns on desktop */
+        #about .grid,
+        #setup .grid,
+        #demo .grid {
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 900px) {
+
+            #about .grid,
+            #setup .grid,
+            #demo .grid {
+                grid-template-columns: 1fr 1fr;
+                align-items: center;
             }
         }
 
-        /* Pricing Grid specific */
+        /* Pricing Grid */
         #pricing .grid {
             grid-template-columns: 1fr;
             max-width: 900px;
