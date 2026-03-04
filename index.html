@@ -192,6 +192,23 @@
             }
         }
 
+        /* CRITICAL: Prevent grid items from overflowing equal columns.
+           By default grid items have min-width: auto which lets images/iframes
+           push columns wider than their 1fr allocation. */
+        .grid>* {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        /* Ensure images never overflow their grid column */
+        .grid img,
+        #about img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
         /* Sections that must always be exactly 2 columns on desktop */
         #about .grid,
         #setup .grid,
@@ -205,7 +222,16 @@
             #setup .grid,
             #demo .grid {
                 grid-template-columns: 1fr 1fr;
-                align-items: center;
+                align-items: stretch;
+            }
+
+            /* Make glass-card stretch full height of grid row */
+            #about .glass-card,
+            #setup .glass-card {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
         }
 
