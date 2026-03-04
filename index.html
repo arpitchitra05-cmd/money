@@ -394,6 +394,47 @@
         </div>
     </section>
 
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        function payNow(amount, indicatorTitle, lockedId) {
+            var options = {
+                "key": "rzp_test_SBevU6jiy0Vrz0", // Your Test Key
+                "amount": amount * 100, // Amount in paise
+                "currency": "INR",
+                "name": "EagleEye Pro Trading",
+                "description": "Purchase " + indicatorTitle,
+                "handler": function (response) {
+                    // Success! Unlock the code
+                    alert("Payment Successful! Your code is now unlocked.");
+
+                    const lockedSection = document.getElementById(lockedId);
+                    const lockOverlay = lockedSection.querySelector('.lock-overlay');
+                    const lockedContent = lockedSection.querySelector('.locked-content');
+
+                    lockOverlay.style.display = 'none';
+                    lockedContent.style.filter = 'none';
+                    lockedContent.style.opacity = '1';
+                    lockedContent.style.userSelect = 'text';
+
+                    // Scroll to the code
+                    lockedSection.scrollIntoView({ behavior: 'smooth' });
+                },
+                "prefill": {
+                    "name": "",
+                    "email": "",
+                    "contact": ""
+                },
+                "theme": {
+                    "color": "#00ff88"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+
     <!-- Pricing Section -->
     <section id="pricing">
         <div class="container">
@@ -409,7 +450,8 @@
                         <li>✔️ Non-Repainting Signals</li>
                         <li>✔️ Lifetime Access</li>
                     </ul>
-                    <a href="#locked-1" class="btn">Unlock Scalping Code</a>
+                    <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
+                        style="width: 100%; border: none; cursor: pointer;">Buy Scalping Code</button>
                 </div>
 
                 <!-- Card 2: Strategy Indicator -->
@@ -422,9 +464,9 @@
                         <li>✔️ SL/TP Target Visuals</li>
                         <li>✔️ Lifetime Access</li>
                     </ul>
-                    <a href="#locked-2" class="btn"
-                        style="background: var(--accent-blue); box-shadow: 0 0 20px rgba(41, 98, 255, 0.3);">Unlock
-                        Strategy Code</a>
+                    <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
+                        style="width: 100%; background: var(--accent-blue); box-shadow: 0 0 20px rgba(41, 98, 255, 0.3); border: none; cursor: pointer;">Buy
+                        Strategy Code</button>
                 </div>
             </div>
         </div>
@@ -439,8 +481,9 @@
                     <div class="lock-icon">🔒</div>
                     <h3>Code Locked</h3>
                     <p>Complete payment (₹175) to reveal the Scalping Indicator code.</p>
-                    <a href="#pricing" class="btn" style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px;">Pay
-                        ₹175</a>
+                    <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
+                        style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; border: none; cursor: pointer;">Pay
+                        ₹175</button>
                 </div>
                 <div class="locked-content">
                     <pre>
@@ -449,7 +492,24 @@ indicator("PRO Intraday scalping Indicator ", overlay=true, max_labels_count=500
 
 // SESSION & DAY LEVELS (INTRADAY)
 isNewDay = ta.change(time("D")) != 0
-// ... [REST OF YOUR SCALPING CODE HERE]
+
+var float dayHigh = na
+var float dayLow  = na
+var float prevHigh = na
+var float prevLow = na
+
+if isNewDay
+    prevHigh := dayHigh
+    prevLow  := dayLow
+    dayHigh := high
+    dayLow  := low
+else
+    dayHigh := math.max(dayHigh, high)
+    dayLow  := math.min(dayLow, low)
+
+// [REST OF THE CODE IS HIDDEN UNTIL PAYMENT]
+// PIVOT POINTS (S/R)
+// ...
 // SuperTrend (The Boss)
 [superTrendLine, superTrendDirection] = ta.supertrend(3, 10)
 // MACD (Momentum Engine)
@@ -469,19 +529,25 @@ isNewDay = ta.change(time("D")) != 0
                     <div class="lock-icon">🔒</div>
                     <h3>Code Locked</h3>
                     <p>Complete payment (₹149) to reveal the Strategy Indicator code.</p>
-                    <a href="#pricing" class="btn"
-                        style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; background: var(--accent-blue);">Pay
-                        ₹149</a>
+                    <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
+                        style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; background: var(--accent-blue); border: none; cursor: pointer;">Pay
+                        ₹149</button>
                 </div>
                 <div class="locked-content">
                     <pre>
 //@version=6
 indicator("PRO Intraday Strategy [Clean]", shorttitle="PRO Strategy", overlay=true, max_labels_count=500)
 
+// -----------------------------------------------------------------------------
+// Constants & Inputs
+// -----------------------------------------------------------------------------
+grp_st      = "SuperTrend Settings"
+grp_macd    = "MACD Settings"
+grp_rsi     = "RSI Settings"
 // SuperTrend Settings
 stLength    = input.int(10, "ATR Length", group="SuperTrend Settings")
 stFactor    = input.float(3.0, "Factor", step=0.1, group="SuperTrend Settings")
-// ... [REST OF YOUR STRATEGY CODE HERE]
+// ... [REST OF THE CODE IS HIDDEN UNTIL PAYMENT]
                     </pre>
                 </div>
             </div>
@@ -506,7 +572,8 @@ stFactor    = input.float(3.0, "Factor", step=0.1, group="SuperTrend Settings")
                         <label>Message</label>
                         <textarea rows="5" placeholder="How can we help?"></textarea>
                     </div>
-                    <button type="submit" class="btn" style="width: 100%; cursor: pointer;">Send Message</button>
+                    <button type="submit" class="btn" style="width: 100%; cursor: pointer; border: none;">Send
+                        Message</button>
                 </form>
             </div>
         </div>
