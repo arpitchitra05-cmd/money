@@ -36,6 +36,7 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+            font-size: 16px;
         }
 
         h1,
@@ -46,19 +47,26 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
         section {
-            padding: 80px 0;
+            padding: 60px 0;
+        }
+
+        @media (min-width: 768px) {
+            section {
+                padding: 80px 0;
+            }
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 40px;
         }
 
         .section-title span {
@@ -67,22 +75,38 @@
 
         .glass-card {
             background: var(--bg-card);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             transition: transform 0.3s ease;
         }
 
+        @media (min-width: 768px) {
+            .glass-card {
+                padding: 40px;
+            }
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 60px;
+            /* Increased length */
             background: var(--primary);
             color: #000;
             text-decoration: none;
@@ -94,6 +118,7 @@
             border: none;
             cursor: pointer;
             font-size: 0.9rem;
+            min-height: 48px;
         }
 
         .btn:hover {
@@ -102,12 +127,12 @@
         }
 
         nav {
-            padding: 20px 0;
+            padding: 15px 0;
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
-            background: rgba(11, 14, 17, 0.9);
-            z-index: 100;
+            background: rgba(11, 14, 17, 0.95);
+            z-index: 1000;
             backdrop-filter: blur(10px);
         }
 
@@ -128,6 +153,75 @@
             color: var(--primary);
         }
 
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1100;
+            padding: 10px;
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: var(--bg-dark);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            padding: 100px 40px;
+            gap: 30px;
+            transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .mobile-nav.active {
+            right: 0;
+        }
+
+        .mobile-nav a {
+            color: #fff;
+            font-size: 1.2rem;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         footer {
             text-align: center;
             padding: 40px;
@@ -139,12 +233,28 @@
 
 <body>
 
+    <div class="overlay" id="overlay"></div>
     <nav>
         <div class="container nav-content">
             <a href="index.html" class="logo">EagleEye <span>Pro</span></a>
-            <a href="index.html" class="btn" style="padding: 8px 20px; font-size: 0.8rem;">Back to Home</a>
+            <div class="mobile-menu-btn" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <a href="index.html" class="btn" style="padding: 10px 30px; font-size: 0.8rem; display: none;"
+                id="nav-btn">Back to Home</a>
         </div>
     </nav>
+
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#about">About</a>
+        <a href="#" class="active">Indicators Description</a>
+        <a href="index.html#demo">Demo</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="index.html#contact">Contact</a>
+    </div>
 
     <!-- Detailed Overviews -->
     <section id="deep-dive">
@@ -194,10 +304,10 @@
                         </ul>
                         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                             <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
-                                style="min-width: 180px;">Buy Now - ₹175</button>
+                                style="min-width: 200px;">Buy Indicators – ₹175</button>
                             <a href="index.html#demo" class="btn"
-                                style="background: transparent; border: 1px solid var(--primary); color: var(--primary);">Live
-                                Demo</a>
+                                style="background: transparent; border: 1px solid var(--primary); color: var(--primary); min-width: 200px;">Live
+                                Demo Video</a>
                         </div>
                     </div>
                     <div style="position: relative;">
@@ -241,11 +351,11 @@
                         </ul>
                         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                             <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
-                                style="background: var(--accent-blue); color: #fff; min-width: 180px;">Buy Now -
+                                style="background: var(--accent-blue); color: #fff; min-width: 200px;">Buy Strategy –
                                 ₹149</button>
                             <a href="index.html#setup" class="btn"
-                                style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);">Setup
-                                Guide</a>
+                                style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); min-width: 200px;">Setup
+                                Guide Video</a>
                         </div>
                     </div>
                     <div style="order: 1; position: relative;">
@@ -300,6 +410,21 @@
     <!-- Razorpay Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        // Hamburger Menu Logic
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileNav = document.getElementById('mobile-nav');
+        const overlay = document.getElementById('overlay');
+
+        function toggleMenu() {
+            menuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : 'auto';
+        }
+
+        if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
+        if (overlay) overlay.addEventListener('click', toggleMenu);
+
         function payNow(amount, indicatorTitle, lockedId) {
             var options = {
                 "key": "rzp_test_SBevU6jiy0Vrz0",

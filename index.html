@@ -16,15 +16,14 @@
     <style>
         :root {
             --primary: #00ff88;
-            /* Bullish Green */
             --secondary: #ff4d4d;
-            /* Bearish Red */
             --bg-dark: #0B0E11;
             --bg-card: rgba(30, 34, 45, 0.7);
             --text-main: #ffffff;
             --text-dim: #b2b5be;
             --accent-blue: #2962ff;
             --glass-border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(11, 14, 17, 0.95);
         }
 
         * {
@@ -40,6 +39,7 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+            font-size: 16px;
         }
 
         h1,
@@ -50,23 +50,25 @@
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* Hero Section */
+        /* Hero Section - Mobile First */
         .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            background: linear-gradient(rgba(11, 14, 17, 0.8), rgba(11, 14, 17, 0.9)),
+            background: linear-gradient(rgba(11, 14, 17, 0.85), rgba(11, 14, 17, 0.95)),
                 url('hero_trading_chart_background_1772615592053.png');
             background-size: cover;
             background-position: center;
             position: relative;
+            padding: 120px 0 80px;
         }
 
         .hero::after {
@@ -75,12 +77,13 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 150px;
+            height: 100px;
             background: linear-gradient(to top, var(--bg-dark), transparent);
         }
 
         .hero-content h1 {
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            line-height: 1.1;
             margin-bottom: 20px;
             background: linear-gradient(45deg, #fff, var(--primary));
             -webkit-background-clip: text;
@@ -90,7 +93,7 @@
         }
 
         .hero-content p {
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 4vw, 1.25rem);
             color: var(--text-dim);
             max-width: 700px;
             margin: 0 auto 40px;
@@ -99,17 +102,24 @@
 
         .btn {
             display: inline-block;
-            padding: 16px 40px;
+            padding: 18px 60px;
+            /* Increased length */
             background: var(--primary);
             color: #000;
             text-decoration: none;
             font-weight: 700;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
             text-transform: uppercase;
             letter-spacing: 1px;
             animation: fadeInUp 1s ease-out 0.4s backwards;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
         }
 
         .btn:hover {
@@ -120,13 +130,25 @@
 
         /* Section Layouts */
         section {
-            padding: 100px 0;
+            padding: 60px 0;
+        }
+
+        @media (min-width: 768px) {
+            section {
+                padding: 100px 0;
+            }
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .section-title {
+                margin-bottom: 60px;
+            }
         }
 
         .section-title span {
@@ -136,154 +158,67 @@
         /* Glass Cards */
         .glass-card {
             background: var(--bg-card);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 768px) {
+            .glass-card {
+                padding: 40px;
+            }
         }
 
         .glass-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
         }
 
-        /* Grid Layouts */
+        /* Grid Layouts - Mobile First (1 column) */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
 
-        /* Features */
-        .feature-item i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        /* Locked Section */
-        .locked-container {
-            position: relative;
-            background: #121212;
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid #333;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
-        }
-
-        .locked-content {
-            filter: blur(8px);
-            user-select: none;
-            opacity: 0.5;
-        }
-
-        .lock-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 2;
-        }
-
-        .lock-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        /* Video Embeds */
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            /* 16:9 */
-            height: 0;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* Pricing Card */
-        .pricing-card {
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-            border: 2px solid var(--primary);
-            position: relative;
-        }
-
-        .price {
-            font-size: 4rem;
-            color: #fff;
-            margin: 20px 0;
-        }
-
-        .price span {
-            font-size: 1.5rem;
-            color: var(--text-dim);
-        }
-
-        /* Contact Form */
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 15px;
-            background: #1e222d;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            section {
-                padding: 60px 0;
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
             }
         }
 
-        /* Navigation */
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Pricing Grid specific */
+        #pricing .grid {
+            grid-template-columns: 1fr;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            #pricing .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Nav & Hamburger */
         nav {
-            padding: 20px 0;
+            padding: 15px 0;
             border-bottom: 1px solid var(--glass-border);
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(11, 14, 17, 0.8);
-            z-index: 100;
+            background: var(--nav-bg);
+            z-index: 1000;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
@@ -294,20 +229,16 @@
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .logo span {
-            color: var(--primary);
-        }
-
         .nav-links {
-            display: flex;
-            gap: 30px;
+            display: none;
+            /* Hide on mobile */
+        }
+
+        @media (min-width: 1024px) {
+            .nav-links {
+                display: flex;
+                gap: 30px;
+            }
         }
 
         .nav-links a {
@@ -315,10 +246,82 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            padding: 10px;
         }
 
         .nav-links a:hover {
             color: var(--primary);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1100;
+            padding: 10px;
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: var(--bg-dark);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            padding: 100px 40px;
+            gap: 30px;
+            transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            border-left: 1px solid var(--glass-border);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .mobile-nav.active {
+            right: 0;
+        }
+
+        .mobile-nav a {
+            color: #fff;
+            font-size: 1.2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Animations */
@@ -419,11 +422,141 @@
             margin-top: 50px;
             border-radius: 0 15px 15px 0;
         }
+
+        /* Logo */
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        /* Locked Section */
+        .locked-container {
+            position: relative;
+            background: #121212;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        .locked-content {
+            filter: blur(8px);
+            user-select: none;
+            opacity: 0.5;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 2;
+        }
+
+        .lock-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        /* Video Embeds */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            /* 16:9 */
+            height: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Pricing Card */
+        .pricing-card {
+            text-align: center;
+            border: 2px solid var(--primary);
+            position: relative;
+        }
+
+        .price {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: #fff;
+            margin: 20px 0;
+        }
+
+        .price span {
+            font-size: 1.5rem;
+            color: var(--text-dim);
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background: #1e222d;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* Code copy button */
+        .copy-btn {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
 
+    <div class="overlay" id="overlay"></div>
     <nav>
         <div class="container nav-content">
             <a href="#home" class="logo">EagleEye <span>Pro</span></a>
@@ -434,9 +567,24 @@
                 <a href="#pricing">Pricing</a>
                 <a href="#contact">Contact</a>
             </div>
-            <a href="about.html" class="btn" style="padding: 10px 25px; font-size: 0.8rem;">About Pages</a>
+            <div class="mobile-menu-btn" id="mobile-menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <a href="about.html" class="btn" style="padding: 12px 30px; font-size: 0.8rem; display: none;"
+                id="nav-btn">Indicators Description</a>
         </div>
     </nav>
+
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="#home" onclick="toggleMenu()">Home</a>
+        <a href="#about" onclick="toggleMenu()">About</a>
+        <a href="about.html" onclick="toggleMenu()">Indicators Description</a>
+        <a href="#demo" onclick="toggleMenu()">Demo</a>
+        <a href="#pricing" onclick="toggleMenu()">Pricing</a>
+        <a href="#contact" onclick="toggleMenu()">Contact</a>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -445,7 +593,7 @@
                 <h1>EagleEye Pro Indicator</h1>
                 <p>Advanced algorithmic trading signals for TradingView. High accuracy, zero lag, and professional-grade
                     technical analysis.</p>
-                <a href="about.html" class="btn">View About Details – ₹175</a>
+                <a href="about.html" class="btn">Indicators Description – ₹175</a>
             </div>
         </div>
     </section>
@@ -480,8 +628,9 @@
                     style="position: absolute; width: 100%; height: 100%; background: var(--primary); opacity: 0.1; filter: blur(100px); border-radius: 50%; z-index: -1;">
                 </div>
                 <img src="premium_trading_dashboard_ui_1772624158468.png" alt="Trading Dashboard"
-                    style="width: 100%; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid var(--glass-border); transition: transform 0.5s ease;"
-                    onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    style="width: 100%; border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid var(--glass-border); transition: transform 0.3s ease;"
+                    onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"
+                    loading="lazy">
             </div>
         </div>
     </section>
@@ -604,12 +753,27 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
+        // Hamburger Menu Logic
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileNav = document.getElementById('mobile-nav');
+        const overlay = document.getElementById('overlay');
+
+        function toggleMenu() {
+            menuBtn.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : 'auto';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
         window.onload = function () {
-            // Check for payments made on the About page
+            // Rest of your existing logic...
             ['locked-1', 'locked-2'].forEach(id => {
                 if (localStorage.getItem('payment_' + id) === 'success') {
                     unlockCode(id);
-                    localStorage.removeItem('payment_' + id); // Clear to avoid repeated alerts
+                    localStorage.removeItem('payment_' + id);
                 }
             });
         };
