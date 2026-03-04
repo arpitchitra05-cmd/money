@@ -412,26 +412,40 @@
                     const lockedSection = document.getElementById(lockedId);
                     const lockOverlay = lockedSection.querySelector('.lock-overlay');
                     const lockedContent = lockedSection.querySelector('.locked-content');
+                    const copyBtn = lockedSection.querySelector('.copy-btn');
 
                     lockOverlay.style.display = 'none';
                     lockedContent.style.filter = 'none';
                     lockedContent.style.opacity = '1';
                     lockedContent.style.userSelect = 'text';
+                    lockedContent.style.maxHeight = '500px';
+                    lockedContent.style.overflowY = 'auto';
+
+                    if (copyBtn) copyBtn.style.display = 'block';
 
                     // Scroll to the code
                     lockedSection.scrollIntoView({ behavior: 'smooth' });
                 },
-                "prefill": {
-                    "name": "",
-                    "email": "",
-                    "contact": ""
-                },
-                "theme": {
-                    "color": "#00ff88"
-                }
+                "prefill": { "name": "", "email": "", "contact": "" },
+                "theme": { "color": "#00ff88" }
             };
             var rzp1 = new Razorpay(options);
             rzp1.open();
+        }
+
+        function copyCode(btn, codeId) {
+            const codeText = document.getElementById(codeId).innerText;
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "Copied!";
+                btn.style.background = "#fff";
+                btn.style.color = "#000";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "var(--primary)";
+                    btn.style.color = "#000";
+                }, 2000);
+            });
         }
     </script>
 
@@ -476,21 +490,27 @@
     <section id="locked-1">
         <div class="container">
             <h2 class="section-title">Scalping Indicator <span>Source Code</span></h2>
-            <div class="locked-container">
-                <div class="lock-overlay">
-                    <div class="lock-icon">🔒</div>
-                    <h3>Code Locked</h3>
-                    <p>Complete payment (₹175) to reveal the Scalping Indicator code.</p>
-                    <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
-                        style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; border: none; cursor: pointer;">Pay
-                        ₹175</button>
-                </div>
-                <div class="locked-content">
-                    <pre>
+            <div style="position: relative;">
+                <button class="btn copy-btn" onclick="copyCode(this, 'pine-code-1')"
+                    style="position: absolute; top: 10px; right: 10px; z-index: 10; padding: 5px 15px; font-size: 0.7rem; display: none; border: none; cursor: pointer;">Copy
+                    Code</button>
+                <div class="locked-container">
+                    <div class="lock-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <h3>Code Locked</h3>
+                        <p>Complete payment (₹175) to reveal the Scalping Indicator code.</p>
+                        <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
+                            style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; border: none; cursor: pointer;">Pay
+                            ₹175</button>
+                    </div>
+                    <div class="locked-content" style="max-height: 300px; overflow-y: hidden;">
+                        <pre id="pine-code-1">
 //@version=6
 indicator("PRO Intraday scalping Indicator ", overlay=true, max_labels_count=500)
 
+// =======================================
 // SESSION & DAY LEVELS (INTRADAY)
+// =======================================
 isNewDay = ta.change(time("D")) != 0
 
 var float dayHigh = na
@@ -507,14 +527,111 @@ else
     dayHigh := math.max(dayHigh, high)
     dayLow  := math.min(dayLow, low)
 
-// [REST OF THE CODE IS HIDDEN UNTIL PAYMENT]
+// =======================================
 // PIVOT POINTS (S/R)
-// ...
-// SuperTrend (The Boss)
+// =======================================
+pivotHigh = ta.pivothigh(high, 10, 10)
+pivotLow  = ta.pivotlow(low, 10, 10)
+
+var float resistLevel = na
+var float supportLevel = na
+
+if not na(pivotHigh)
+    resistLevel := pivotHigh
+
+if not na(pivotLow)
+    supportLevel := pivotLow
+
+plot(resistLevel, title="Resistance", color=color.red, linewidth=1, style=plot.style_stepline)
+plot(supportLevel, title="Support", color=color.green, linewidth=1, style=plot.style_stepline)
+
+// =======================================
+// STRATEGY: SUPERTREND + MACD (Heavy Duty)
+// =======================================
 [superTrendLine, superTrendDirection] = ta.supertrend(3, 10)
-// MACD (Momentum Engine)
+trendIsUp   = (superTrendDirection == -1)
+trendIsDown = (superTrendDirection == 1)
+
 [macdLine, signalLine, histLine] = ta.macd(close, 12, 26, 9)
-                    </pre>
+macdBullish = (macdLine > signalLine)
+macdBearish = (macdLine < signalLine)
+
+rsi = ta.rsi(close, 14)
+
+bodySize = math.abs(close - open)
+isSignificantCandle = bodySize > ta.tr(true) * 0.2 
+
+// =======================================
+// ENTRY CONDITIONS
+// =======================================
+buySignal = (trendIsUp and macdBullish and histLine > 0 and rsi > 55 and isSignificantCandle)
+sellSignal = (trendIsDown and macdBearish and histLine < 0 and rsi < 45 and isSignificantCandle)
+
+// =======================================
+// PLOTS
+// =======================================
+plot(superTrendLine, "SuperTrend", color = trendIsUp ? color.green : color.red, linewidth=2)
+plot(resistLevel, title="Resistance", color=color.red, linewidth=1, style=plot.style_circles)
+plot(supportLevel, title="Support", color=color.green, linewidth=1, style=plot.style_circles)
+
+var int tradeState = 0
+validBuy  = false
+validSell = false
+
+atr = ta.atr(14)
+var float buyEntry = na
+var float sellEntry = na
+var float stopLoss = na
+var float takeProfit = na
+
+if buySignal and tradeState != 1
+    tradeState := 1
+    validBuy   := true
+    buyEntry   := close
+    stopLoss   := close - (atr * 1.5)
+    takeProfit := close + (atr * 3.0) 
+
+if sellSignal and tradeState != -1
+    tradeState := -1
+    validSell  := true
+    sellEntry  := close
+    stopLoss   := close + (atr * 1.5)
+    takeProfit := close - (atr * 3.0)
+
+plot(tradeState == 1 ? stopLoss : na, "Long SL", color=color.red, style=plot.style_linebr, linewidth=2)
+plot(tradeState == 1 ? takeProfit : na, "Long TP", color=color.blue, style=plot.style_linebr, linewidth=2)
+plot(tradeState == -1 ? stopLoss : na, "Short SL", color=color.red, style=plot.style_linebr, linewidth=2)
+plot(tradeState == -1 ? takeProfit : na, "Short TP", color=color.blue, style=plot.style_linebr, linewidth=2)
+
+var label l_sl = na
+var label l_tp = na
+var label s_sl = na
+var label s_tp = na
+
+if not na(l_sl)
+    label.delete(l_sl)
+if not na(l_tp)
+    label.delete(l_tp)
+if not na(s_sl)
+    label.delete(s_sl)
+if not na(s_tp)
+    label.delete(s_tp)
+
+if tradeState == 1
+    l_sl := label.new(bar_index, stopLoss, "SL", style=label.style_none, textcolor=color.red, size=size.tiny)
+    l_tp := label.new(bar_index, takeProfit, "TP", style=label.style_none, textcolor=color.blue, size=size.tiny)
+
+if tradeState == -1
+    s_sl := label.new(bar_index, stopLoss, "SL", style=label.style_none, textcolor=color.red, size=size.tiny)
+    s_tp := label.new(bar_index, takeProfit, "TP", style=label.style_none, textcolor=color.blue, size=size.tiny)
+
+plotshape(validBuy,  title="Buy Signal",  style=shape.labelup,   location=location.belowbar, color=color.green, size=size.small, text="BUY", textcolor=color.white)
+plotshape(validSell, title="Sell Signal", style=shape.labeldown, location=location.abovebar, color=color.red,   size=size.small, text="SELL", textcolor=color.white)
+
+alertcondition(validBuy, title="BUY Alert", message="BUY Signal Detected")
+alertcondition(validSell, title="SELL Alert", message="SELL Signal Detected")
+                        </pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -524,17 +641,21 @@ else
     <section id="locked-2">
         <div class="container">
             <h2 class="section-title">Strategy Indicator <span>Source Code</span></h2>
-            <div class="locked-container" style="border-color: var(--accent-blue);">
-                <div class="lock-overlay">
-                    <div class="lock-icon">🔒</div>
-                    <h3>Code Locked</h3>
-                    <p>Complete payment (₹149) to reveal the Strategy Indicator code.</p>
-                    <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
-                        style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; background: var(--accent-blue); border: none; cursor: pointer;">Pay
-                        ₹149</button>
-                </div>
-                <div class="locked-content">
-                    <pre>
+            <div style="position: relative;">
+                <button class="btn copy-btn" onclick="copyCode(this, 'pine-code-2')"
+                    style="position: absolute; top: 10px; right: 10px; z-index: 10; padding: 5px 15px; font-size: 0.7rem; display: none; border: none; cursor: pointer; background: var(--accent-blue);">Copy
+                    Code</button>
+                <div class="locked-container" style="border-color: var(--accent-blue);">
+                    <div class="lock-overlay">
+                        <div class="lock-icon">🔒</div>
+                        <h3>Code Locked</h3>
+                        <p>Complete payment (₹149) to reveal the Strategy Indicator code.</p>
+                        <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
+                            style="padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; background: var(--accent-blue); border: none; cursor: pointer;">Pay
+                            ₹149</button>
+                    </div>
+                    <div class="locked-content" style="max-height: 300px; overflow-y: hidden;">
+                        <pre id="pine-code-2">
 //@version=6
 indicator("PRO Intraday Strategy [Clean]", shorttitle="PRO Strategy", overlay=true, max_labels_count=500)
 
@@ -544,11 +665,175 @@ indicator("PRO Intraday Strategy [Clean]", shorttitle="PRO Strategy", overlay=tr
 grp_st      = "SuperTrend Settings"
 grp_macd    = "MACD Settings"
 grp_rsi     = "RSI Settings"
-// SuperTrend Settings
-stLength    = input.int(10, "ATR Length", group="SuperTrend Settings")
-stFactor    = input.float(3.0, "Factor", step=0.1, group="SuperTrend Settings")
-// ... [REST OF THE CODE IS HIDDEN UNTIL PAYMENT]
-                    </pre>
+grp_risk    = "Risk Management"
+grp_ui      = "UI & Visuals"
+
+stLength    = input.int(10, "ATR Length", group=grp_st)
+stFactor    = input.float(3.0, "Factor", step=0.1, group=grp_st)
+
+fastLen     = input.int(12, "Fast Length", group=grp_macd)
+slowLen     = input.int(26, "Slow Length", group=grp_macd)
+sigLen      = input.int(9, "Signal Length", group=grp_macd)
+
+rsiLen      = input.int(14, "Length", group=grp_rsi)
+rsiBuyLvl   = input.int(55, "Buy Threshold", group=grp_rsi)
+rsiSellLvl  = input.int(45, "Sell Threshold", group=grp_rsi)
+
+atrPeriod   = input.int(14, "ATR Period", group=grp_risk)
+rrRatio     = input.float(2.0, "Risk:Reward Ratio", step=0.1, group=grp_risk)
+slMultiplier= input.float(1.5, "SL ATR Multiplier", step=0.1, group=grp_risk)
+
+colBuy      = input.color(color.new(color.teal, 0), "Buy Color", group=grp_ui)
+colSell     = input.color(color.new(color.maroon, 0), "Sell Color", group=grp_ui)
+showSR      = input.bool(true, "Show Support/Resistance", group=grp_ui)
+
+// -----------------------------------------------------------------------------
+// Calculations
+// -----------------------------------------------------------------------------
+[stLine, stDir] = ta.supertrend(stFactor, stLength)
+isTrendUp       = stDir == -1
+isTrendDown     = stDir == 1
+
+[macdLine, signalLine, histLine] = ta.macd(close, fastLen, slowLen, sigLen)
+isMacdBullish   = macdLine > signalLine
+isMacdBearish   = macdLine < signalLine
+
+rsiVal          = ta.rsi(close, rsiLen)
+
+bodySize        = math.abs(close - open)
+isSigCandle     = bodySize > (ta.tr(true) * 0.2) 
+
+pivotHigh       = ta.pivothigh(high, 10, 10)
+pivotLow        = ta.pivotlow(low, 10, 10)
+var float rLevel = na
+var float sLevel = na
+
+if not na(pivotHigh)
+    rLevel := pivotHigh
+if not na(pivotLow)
+    sLevel := pivotLow
+
+// -----------------------------------------------------------------------------
+// Strategy Logic
+// -----------------------------------------------------------------------------
+bool longCond = isTrendUp and isMacdBullish and histLine > 0 and rsiVal > rsiBuyLvl and isSigCandle
+bool shortCond = isTrendDown and isMacdBearish and histLine < 0 and rsiVal < rsiSellLvl and isSigCandle
+
+var int tradeDir = 0 // 0 = Flat, 1 = Long, -1 = Short
+var float entryPrice = na
+var float slPrice = na
+var float tpPrice = na
+
+atrVal = ta.atr(atrPeriod)
+
+if tradeDir == 1
+    if low <= slPrice or high >= tpPrice
+        tradeDir := 0
+
+if tradeDir == -1
+    if high >= slPrice or low <= tpPrice
+        tradeDir := 0
+
+bool goLong = longCond and tradeDir == 0
+bool goShort = shortCond and tradeDir == 0
+
+if goLong
+    tradeDir   := 1
+    entryPrice := close
+    slPrice    := close - (atrVal * slMultiplier)
+    tpPrice    := close + (atrVal * slMultiplier * rrRatio)
+
+if goShort
+    tradeDir   := -1
+    entryPrice := close
+    slPrice    := close + (atrVal * slMultiplier)
+    tpPrice    := close - (atrVal * slMultiplier * rrRatio)
+
+// -----------------------------------------------------------------------------
+// Plotting & Visuals
+// -----------------------------------------------------------------------------
+plot(stLine, "SuperTrend", color = isTrendUp ? colBuy : colSell, linewidth=2)
+plot(showSR ? rLevel : na, "Resistance", color=color.new(colSell, 50), style=plot.style_circles)
+plot(showSR ? sLevel : na, "Support",    color=color.new(colBuy, 50),  style=plot.style_circles)
+
+plotshape(goLong,  "Long Signal",  shape.labelup,   location.belowbar, colBuy,  0, "BUY",  color.white, size=size.small)
+plotshape(goShort, "Short Signal", shape.labeldown, location.abovebar, colSell, 0, "SELL", color.white, size=size.small)
+
+plot(tradeDir == 1 ? slPrice : na, "Long SL", color.red, 1, plot.style_linebr)
+plot(tradeDir == 1 ? tpPrice : na, "Long TP", color.teal, 1, plot.style_linebr)
+plot(tradeDir == -1 ? slPrice : na, "Short SL", color.red, 1, plot.style_linebr)
+plot(tradeDir == -1 ? tpPrice : na, "Short TP", color.teal, 1, plot.style_linebr)
+
+bgcolor(tradeDir == 1 ? color.new(colBuy, 90) : tradeDir == -1 ? color.new(colSell, 90) : na, title="Trade Background")
+
+alertcondition(goLong, "Buy Alert", "Long Entry Signal")
+alertcondition(goShort, "Sell Alert", "Short Entry Signal")
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Overviews -->
+    <section id="deep-dive">
+        <div class="container">
+            <h2 class="section-title">Indicator <span>Deep Dives</span></h2>
+
+            <!-- Scalping Indicator Deep Dive -->
+            <div class="glass-card" style="margin-bottom: 50px; border-left: 5px solid var(--primary);">
+                <div class="grid" style="align-items: center;">
+                    <div>
+                        <h3 style="font-size: 2rem; margin-bottom: 20px;">1. Intraday Scalping Indicator</h3>
+                        <p style="color: var(--text-dim); margin-bottom: 20px;">A high-frequency trading powerhouse
+                            designed for the 1-minute and 5-minute charts. This indicator filters out market noise and
+                            focuses on pure momentum reversals.</p>
+                        <h4 style="margin-bottom: 10px;">Technical Edge:</h4>
+                        <ul style="color: var(--text-dim); margin-bottom: 30px; padding-left: 20px;">
+                            <li>SuperTrend volatility tracking for trend baseline.</li>
+                            <li>MACD Histogram expansion detection for fresh momentum.</li>
+                            <li>RSI (14) overbought/oversold filtering for higher accuracy.</li>
+                            <li>Automatic Support/Resistance pivot levels.</li>
+                        </ul>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button onclick="payNow(175, 'Scalping Indicator', 'locked-1')" class="btn"
+                                style="border: none; cursor: pointer;">Buy - ₹175</button>
+                            <a href="#demo" class="btn"
+                                style="background: transparent; border: 1px solid var(--primary); color: var(--primary);">Watch
+                                Demo</a>
+                            <a href="#setup" class="btn"
+                                style="background: transparent; border: 1px solid #555; color: #fff;">How to Setup</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategy Indicator Deep Dive -->
+            <div class="glass-card" style="border-left: 5px solid var(--accent-blue);">
+                <div class="grid" style="align-items: center;">
+                    <div>
+                        <h3 style="font-size: 2rem; margin-bottom: 20px;">2. PRO Intraday Strategy [Clean]</h3>
+                        <p style="color: var(--text-dim); margin-bottom: 20px;">A complete trading system that manages
+                            your risk as well as your entries. Perfect for traders who want a visual blueprint of their
+                            targets and stop losses.</p>
+                        <h4 style="margin-bottom: 10px;">Strategic Edge:</h4>
+                        <ul style="color: var(--text-dim); margin-bottom: 30px; padding-left: 20px;">
+                            <li>Visual Stop Loss & Take Profit lines (ATR Based).</li>
+                            <li>1:2 Risk-to-Reward ratio optimization.</li>
+                            <li>Clean UI with background fills during active trades.</li>
+                            <li>Intelligent exit logic for trend exhaustion.</li>
+                        </ul>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button onclick="payNow(149, 'Strategy Indicator', 'locked-2')" class="btn"
+                                style="background: var(--accent-blue); border: none; cursor: pointer; color: #fff;">Buy
+                                - ₹149</button>
+                            <a href="#demo" class="btn"
+                                style="background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);">Watch
+                                Demo</a>
+                            <a href="#setup" class="btn"
+                                style="background: transparent; border: 1px solid #555; color: #fff;">How to Setup</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
